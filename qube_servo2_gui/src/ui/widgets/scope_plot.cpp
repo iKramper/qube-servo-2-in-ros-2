@@ -233,6 +233,28 @@ void ScopePlot::append(int series_index, double t_s, double value) {
     dirty_ = true;
 }
 
+void ScopePlot::setSeriesData(int series_index, const QList<QPointF>& points) {
+    if (shutting_down_ || series_index < 0 || series_index >= static_cast<int>(series_.size())) return;
+
+    QList<QPointF> sanitized;
+    sanitized.reserve(points.size());
+    for (const auto& p : points) {
+        if (!std::isfinite(p.x()) || !std::isfinite(p.y())) continue;
+        sanitized.append(QPointF(p.x(), sanitizeValue_(p.y())));
+    }
+
+    series_[series_index]->replace(sanitized);
+    if (!sanitized.isEmpty() && !y_initialized_) {
+        const double value = sanitized.constLast().y();
+        const double span = std::max(1e-12, initial_y_span_);
+        fixed_y_min_ = value - 0.5 * span;
+        fixed_y_max_ = value + 0.5 * span;
+        axis_y_->setRange(fixed_y_min_, fixed_y_max_);
+        y_initialized_ = true;
+    }
+    dirty_ = true;
+}
+
 void ScopePlot::prune_(int series_index, double newest_t) {
     auto* s = series_[series_index];
     int remove_count = 0;

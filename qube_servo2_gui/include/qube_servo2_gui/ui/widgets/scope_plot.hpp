@@ -3,6 +3,7 @@
 #include <QElapsedTimer>
 #include <QEvent>
 #include <QFrame>
+#include <QList>
 #include <QPointF>
 #include <QStringList>
 
@@ -32,6 +33,7 @@ public:
     ~ScopePlot() override;
 
     void append(int series_index, double t_s, double value);
+    void setSeriesData(int series_index, const QList<QPointF>& points);
     void clear();
 
     // Time zoom only. The selected window remains fixed while live data arrives.

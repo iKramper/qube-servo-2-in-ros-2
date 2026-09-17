@@ -7,6 +7,9 @@
 #include <QElapsedTimer>
 #include <QWidget>
 
+#include <array>
+#include <deque>
+
 class QCheckBox;
 class QComboBox;
 class QDoubleSpinBox;
@@ -59,6 +62,16 @@ private:
     models::WaveformType selectedType_() const;
     void updateFieldVisibility_();
     double wrappedRadians_(double radians) const noexcept;
+    void appendMonitorHistory_(const qube_servo2::gui::models::TelemetrySample& sample, double t);
+    void pruneMonitorHistory_(double newest_t);
+    void rebuildLivePlot_();
+    void updateLiveMetrics_(const qube_servo2::gui::models::TelemetrySample& sample);
+
+    struct MonitorHistorySample {
+        double t{0.0};
+        std::array<double, 3> reference{};
+        std::array<double, 3> response{};
+    };
 
     double voltage_limit_{10.0};
     services::WaveformGenerator generator_;
@@ -103,7 +116,12 @@ private:
     widgets::ScopePlot* live_plot_{nullptr};
 
     double live_t0_{-1.0};
-    double reference_value_{0.0};
+    std::array<double, 3> reference_by_mode_{};
+    std::deque<MonitorHistorySample> monitor_history_;
+    double monitor_history_retention_s_{120.0};
+    std::size_t monitor_history_max_points_{6000};
+    bool active_{false};
+    bool live_plot_synced_{false};
     bool shutting_down_{false};
 };
 

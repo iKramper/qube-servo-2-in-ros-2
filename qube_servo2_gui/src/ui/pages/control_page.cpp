@@ -254,8 +254,13 @@ ControlPage::~ControlPage() {
 
 void ControlPage::setActive(bool active) {
     if (shutting_down_) return;
+    active_ = active;
     if (preview_plot_) preview_plot_->setActive(active);
     if (live_plot_) live_plot_->setActive(active);
+
+    // Hidden pages keep only a lightweight numeric ring buffer. QChart is
+    // reconstructed in one batch when the page becomes visible again.
+    if (active_ && !live_plot_synced_) rebuildLivePlot_();
 }
 
 void ControlPage::shutdown() {
@@ -264,7 +269,9 @@ void ControlPage::shutdown() {
 
     if (waveform_timer_) waveform_timer_->stop();
     running_ = false;
-    reference_value_ = 0.0;
+    reference_by_mode_.fill(0.0);
+    monitor_history_.clear();
+    live_plot_synced_ = false;
 
     if (preview_plot_) preview_plot_->shutdown();
     if (live_plot_) live_plot_->shutdown();
@@ -335,14 +342,16 @@ void ControlPage::tickWaveform_() {
     }
 
     const double command = std::clamp(generator_.value(t), -voltage_limit_, voltage_limit_);
-    reference_value_ = clampSmall(command, 1e-7);
+    const int mode = monitor_mode_ ? std::clamp(monitor_mode_->currentIndex(), 0, 2) : 0;
+    reference_by_mode_[static_cast<std::size_t>(mode)] = clampSmall(command, 1e-7);
     emit commandRequested(command);
 }
 
 void ControlPage::stopOutput() {
     waveform_timer_->stop();
     running_ = false;
-    reference_value_ = 0.0;
+    const int mode = monitor_mode_ ? std::clamp(monitor_mode_->currentIndex(), 0, 2) : 0;
+    reference_by_mode_[static_cast<std::size_t>(mode)] = 0.0;
     emit commandRequested(0.0);
     emit stopRequested();
     emit waveformStopped();
@@ -361,40 +370,99 @@ void ControlPage::updateTelemetry(const models::TelemetrySample& sample) {
     if (live_t0_ < 0.0) live_t0_ = sample.ros_time_s;
     const double t = sample.ros_time_s - live_t0_;
 
-    const int mode = monitor_mode_ ? monitor_mode_->currentIndex() : 0;
+    appendMonitorHistory_(sample, t);
+    updateLiveMetrics_(sample);
+
+    // QChart updates only while this page is visible. Hidden operation stores
+    // compact numeric history only, so changing tabs does not restart time and
+    // does not spend CPU/GPU rendering an invisible chart.
+    if (active_ && live_plot_) {
+        const int mode = monitor_mode_ ? std::clamp(monitor_mode_->currentIndex(), 0, 2) : 0;
+        const auto& h = monitor_history_.back();
+        live_plot_->append(0, h.t, h.reference[static_cast<std::size_t>(mode)]);
+        live_plot_->append(1, h.t, h.response[static_cast<std::size_t>(mode)]);
+        live_plot_synced_ = true;
+    } else {
+        live_plot_synced_ = false;
+    }
+}
+
+void ControlPage::appendMonitorHistory_(const models::TelemetrySample& sample, double t) {
+    MonitorHistorySample h;
+    h.t = t;
+
+    h.reference[0] = clampSmall(sample.command_voltage, 1e-7);
+    h.reference[1] = clampSmall(reference_by_mode_[1], 1e-7);
+    h.reference[2] = wrappedRadians_(reference_by_mode_[2]);
+
+    h.response[0] = clampSmall(sample.applied_voltage_v, 1e-7);
+    h.response[1] = clampSmall(sample.velocity_rad_s, 1e-7);
+    h.response[2] = wrappedRadians_(sample.position_rad);
+
+    monitor_history_.push_back(h);
+    pruneMonitorHistory_(t);
+}
+
+void ControlPage::pruneMonitorHistory_(double newest_t) {
+    const double min_t = newest_t - monitor_history_retention_s_;
+    while (!monitor_history_.empty() && monitor_history_.front().t < min_t) {
+        monitor_history_.pop_front();
+    }
+    while (monitor_history_.size() > monitor_history_max_points_) {
+        monitor_history_.pop_front();
+    }
+}
+
+void ControlPage::rebuildLivePlot_() {
+    if (!live_plot_) return;
+
+    live_plot_->clear();
+    const int mode = monitor_mode_ ? std::clamp(monitor_mode_->currentIndex(), 0, 2) : 0;
+
+    QList<QPointF> reference_points;
+    QList<QPointF> response_points;
+    reference_points.reserve(static_cast<qsizetype>(monitor_history_.size()));
+    response_points.reserve(static_cast<qsizetype>(monitor_history_.size()));
+
+    for (const auto& h : monitor_history_) {
+        reference_points.append(QPointF(h.t, h.reference[static_cast<std::size_t>(mode)]));
+        response_points.append(QPointF(h.t, h.response[static_cast<std::size_t>(mode)]));
+    }
+
+    live_plot_->setSeriesData(0, reference_points);
+    live_plot_->setSeriesData(1, response_points);
+    live_plot_synced_ = true;
+}
+
+void ControlPage::updateLiveMetrics_(const models::TelemetrySample& sample) {
+    const int mode = monitor_mode_ ? std::clamp(monitor_mode_->currentIndex(), 0, 2) : 0;
     double reference = 0.0;
     double response = 0.0;
     QString unit;
     int decimals = 3;
 
     switch (mode) {
-    case 1:  // Speed
-        reference = clampSmall(reference_value_, 1e-7);
+    case 1:
+        reference = clampSmall(reference_by_mode_[1], 1e-7);
         response = clampSmall(sample.velocity_rad_s, 1e-7);
         unit = "rad/s";
-        decimals = 3;
         break;
-    case 2:  // Position
-        reference = wrappedRadians_(reference_value_);
+    case 2:
+        reference = wrappedRadians_(reference_by_mode_[2]);
         response = wrappedRadians_(sample.position_rad);
         unit = "rad";
-        decimals = 3;
         break;
     case 0:
-    default:  // Voltage
+    default:
         reference = clampSmall(sample.command_voltage, 1e-7);
         response = clampSmall(sample.applied_voltage_v, 1e-7);
         unit = "V";
-        decimals = 3;
         break;
     }
 
     command_value_->setText(QString("Ref  %1 %2").arg(fixedSmart(reference, decimals), unit));
     applied_value_->setText(QString("Resp  %1 %2").arg(fixedSmart(response, decimals), unit));
     current_value_->setText(QString("i  %1 A").arg(fixedSmart(sample.current_a, 4)));
-
-    live_plot_->append(0, t, reference);
-    live_plot_->append(1, t, response);
 }
 
 double ControlPage::wrappedRadians_(double radians) const noexcept {
@@ -408,8 +476,6 @@ double ControlPage::wrappedRadians_(double radians) const noexcept {
 void ControlPage::updateMonitorMode_() {
     if (!live_plot_ || !monitor_mode_) return;
 
-    live_plot_->clear();
-    live_t0_ = -1.0;
     live_plot_->setSeriesName(0, "Reference");
     live_plot_->setSeriesName(1, "Response");
     live_plot_->setSeriesDashed(0, true);
@@ -435,6 +501,9 @@ void ControlPage::updateMonitorMode_() {
         applied_value_->setText("Resp  0.000 V");
         break;
     }
+
+    live_plot_synced_ = false;
+    if (active_) rebuildLivePlot_();
 }
 
 void ControlPage::refreshPreview_() {

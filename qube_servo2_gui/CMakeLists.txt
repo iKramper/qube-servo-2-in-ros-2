@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(qube_servo2_gui
-    VERSION 1.1.0
+    VERSION 1.2.0
     DESCRIPTION "Qt6 HMI for Quanser QUBE-Servo 2 on ROS 2"
     LANGUAGES CXX
 )
@@ -35,6 +35,7 @@ set(CMAKE_AUTOUIC ON)
 set(GUI_HEADERS
     include/qube_servo2_gui/app/main_window.hpp
     include/qube_servo2_gui/core/models/telemetry_sample.hpp
+    include/qube_servo2_gui/core/models/recording_config.hpp
     include/qube_servo2_gui/core/models/waveform_config.hpp
     include/qube_servo2_gui/core/services/waveform_generator.hpp
     include/qube_servo2_gui/core/logging/data_recorder.hpp

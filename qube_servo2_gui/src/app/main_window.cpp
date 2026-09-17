@@ -230,6 +230,10 @@ void MainWindow::wireSignals_() {
             control_, &ui::pages::ControlPage::setRecordingState);
     connect(recorder_, &logging::DataRecorder::statsChanged,
             recording_dialog_, &ui::pages::RecordingDialog::setStats);
+    connect(recorder_, &logging::DataRecorder::peakCountChanged,
+            recording_dialog_, &ui::pages::RecordingDialog::setPeakCount);
+    connect(recorder_, &logging::DataRecorder::captureStatusChanged,
+            recording_dialog_, &ui::pages::RecordingDialog::setCaptureStatus);
     connect(recorder_, &logging::DataRecorder::errorOccurred,
             recording_dialog_, &ui::pages::RecordingDialog::showError);
 }
@@ -257,6 +261,7 @@ void MainWindow::onThemeAction_() {
 void MainWindow::onThemeChanged_() { updateTopBarStyle_(); }
 
 void MainWindow::showRecordingDialog_() {
+    recording_dialog_->setWaveformInfo(control_->waveformConfig());
     recording_dialog_->show();
     recording_dialog_->raise();
     recording_dialog_->activateWindow();
@@ -292,10 +297,11 @@ bool MainWindow::beginRecording_(const models::WaveformConfig& waveform) {
         recording_dialog_->prefix(),
         recording_dialog_->notes(),
         waveform,
+        recording_dialog_->recordingConfig(),
         recording_dialog_->writeMetadata());
 }
 
-void MainWindow::startRecording_() { beginRecording_(last_waveform_); }
+void MainWindow::startRecording_() { beginRecording_(control_->waveformConfig()); }
 void MainWindow::stopRecording_() { recorder_->stop(); }
 
 void MainWindow::onWaveformStarted_(const models::WaveformConfig& config) {
