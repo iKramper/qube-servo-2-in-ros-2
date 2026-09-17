@@ -1,0 +1,79 @@
+/* Tron Evolution / Glass HUD
+ * Futuristic instrumentation without the "game UI" look: thin cyan geometry,
+ * dark translucent panels and restrained typography.
+ */
+* {
+  font-family: "Inter", "Segoe UI", "DejaVu Sans", sans-serif;
+  font-size: 12px;
+}
+QMainWindow, QDialog, QWidget { background: #02070A; color: #D8F7FF; }
+
+QFrame#panel {
+  background: qlineargradient(x1:0,y1:0,x2:1,y2:1,
+              stop:0 rgba(5,31,39,228), stop:1 rgba(1,13,18,238));
+  border: 1px solid rgba(0,230,255,115);
+  border-radius: 8px;
+}
+QFrame#subPanel {
+  background: rgba(0,230,255,10);
+  border: 1px solid rgba(0,230,255,55);
+  border-radius: 6px;
+}
+QFrame#chartFrame {
+  background: rgba(0,8,12,175);
+  border: 1px solid rgba(0,230,255,48);
+  border-radius: 6px;
+}
+QChartView#scopeChartView { background: transparent; border: none; }
+
+QLabel#title {
+  color: #9DEEFF; font-size: 17px; font-weight: 700; letter-spacing: 1.8px;
+}
+QLabel#panelTitle, QLabel#chartTitle {
+  color: #54DFF1; font-size: 14px; font-weight: 700; letter-spacing: 1.2px;
+}
+QLabel#metricValue {
+  color: #D8F7FF; font-family: "DejaVu Sans Mono", "Consolas", monospace;
+  font-size: 12px; font-weight: 700; padding: 2px 6px;
+  background: rgba(0,230,255,10); border: 1px solid rgba(0,230,255,35); border-radius: 4px;
+}
+QLabel#fieldLabel, QLabel#subtitle { color: #76AEBB; }
+QLabel#errorText { color: #FF6B82; }
+QLabel#chartWindowLabel { color: #76AEBB; font-family: "DejaVu Sans Mono", monospace; }
+
+QPushButton {
+  background: rgba(0,230,255,22); color: #D8F7FF;
+  border: 1px solid rgba(0,230,255,125); border-radius: 6px;
+  padding: 6px 12px; font-weight: 650;
+}
+QPushButton:hover { background: rgba(0,230,255,38); border-color: #5CF0FF; }
+QPushButton:pressed { background: rgba(0,230,255,55); }
+QPushButton#secondary { background: rgba(160,120,255,10); border-color: rgba(176,132,255,90); }
+QPushButton#danger { background: rgba(255,62,91,42); border-color: #FF4D6D; color: #FFE9ED; font-weight: 750; }
+QPushButton[recording="true"] { background: rgba(255,62,91,35); border-color: #FF4D6D; color: #FFCCD5; }
+
+QToolButton#chartToolButton {
+  background: rgba(0,230,255,8); color: #87DCE8; border: 1px solid rgba(0,230,255,45);
+  border-radius: 4px; padding: 2px 5px; font-weight: 700;
+}
+QToolButton#chartToolButton:hover { color: #FFFFFF; border-color: #00E6FF; background: rgba(0,230,255,22); }
+
+QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QTextEdit {
+  background: rgba(0,10,15,210); color: #D8F7FF;
+  border: 1px solid rgba(0,230,255,55); border-radius: 5px; padding: 4px 7px;
+  selection-background-color: #00BBD0;
+}
+QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus, QTextEdit:focus { border-color: #00E6FF; }
+QCheckBox { color: #B7DDE5; spacing: 6px; }
+QToolTip { background: #03141A; color: #E7FBFF; border: 1px solid #00BFD6; padding: 5px; }
+QStatusBar { background: #01090C; color: #76AEBB; border-top: 1px solid rgba(0,230,255,55); }
+
+/* Data recorder state button */
+QPushButton#recordButton {
+  background: #FFD166; color: #081014; border: 1px solid #D9A928;
+  font-weight: 750; padding: 6px 13px;
+}
+QPushButton#recordButton:hover { background: #FFD166; border: 2px solid #D9A928; }
+QPushButton#recordButton[recording="true"] {
+  background: #FF4D6D; color: #FFFFFF; border-color: #FF4D6D;
+}

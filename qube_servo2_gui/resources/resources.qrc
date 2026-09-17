@@ -1,0 +1,11 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="/">
+    <file>theme/light.qss</file>
+    <file>theme/dark.qss</file>
+    <file>theme/matlab.qss</file>
+    <file>theme/cyberpunk.qss</file>
+    <file>theme/tron_ares.qss</file>
+    <file>theme/tron_evolution.qss</file>
+  </qresource>
+</RCC>

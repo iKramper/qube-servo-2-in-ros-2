@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Load motor parameters -->
+    <xacro:property name="motor_parameters_file" value="$(find qube_servo2_controllers)/config/qube_servo2_motor.yaml"/>
+    <xacro:property name="motor_config" value="${xacro.load_yaml(motor_parameters_file)}"/>
+    <xacro:property name="motor" value="${motor_config['qube_servo2']['ros__parameters']['motor']}"/>
+
+    <!-- Controller manager configuration -->
+    <xacro:property name="controller_manager_config" value="$(find qube_servo2_controllers)/config/controller_manager.yaml"/>
+
+    <ros2_control name="QubeServo2System" type="system">
+
+        <hardware>
+            <plugin>
+                qube_servo2_actuators/QubeServo2GazeboSystem
+            </plugin>
+            <param name="resistance">${motor['resistance']}</param>
+            <param name="inductance">${motor['inductance']}</param>
+            <param name="torque_constant">${motor['torque_constant']}</param>
+            <param name="back_emf_constant">${motor['back_emf_constant']}</param>
+            <param name="voltage_limit">${motor['voltage_limit']}</param>
+            <param name="peak_current_limit">${motor['peak_current_limit']}</param>
+            <param name="viscous_friction">${motor['viscous_friction']}</param>
+            <param name="coulomb_friction">${motor['coulomb_friction']}</param>
+            <param name="friction_smoothing">${motor['friction_smoothing']}</param>
+
+        </hardware>
+
+        <!-- QUBE motor joint -->
+        <joint name="motor_hub_link_joint">
+
+            <!-- Command interface -->
+            <command_interface name="voltage"/>
+
+            <!-- Mechanical states -->
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+
+            <!-- Electrical states -->
+            <state_interface name="current"/>
+            <state_interface name="applied_voltage"/>
+            <state_interface name="back_emf"/>
+            <state_interface name="motor_torque"/>
+
+        </joint>
+
+    </ros2_control>
+
+    <gazebo>
+        <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+            <parameters>
+                ${controller_manager_config}
+            </parameters>
+        </plugin>
+    </gazebo>
+
+</robot>

@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Unit conversions -->
+    <xacro:property name="g_to_kg" value="${0.001}"/>
+    <xacro:property name="mm_to_m" value="${0.001}"/>
+    <xacro:property name="g_mm2_to_kg_m2" value="${0.000000001}"/>
+
+    <!-- Link module -->
+    <xacro:macro name="qube_link" params="link_name config visual_mesh_dir collision_mesh_dir **extra_visuals">
+        <link name="${link_name}">
+
+            <!-- Visual -->
+            <visual name="${link_name}_visual">
+                <origin xyz="${config['visual_origin_xyz'][0] * mm_to_m}
+               ${config['visual_origin_xyz'][1] * mm_to_m}
+               ${config['visual_origin_xyz'][2] * mm_to_m}" rpy="${config['visual_origin_rpy'][0]}
+               ${config['visual_origin_rpy'][1]}
+               ${config['visual_origin_rpy'][2]}"/>
+                <geometry>
+                    <mesh filename="${visual_mesh_dir}/${config['mesh']}.dae" scale="1.0 1.0 1.0"/>
+                </geometry>
+            </visual>
+
+            <!-- Additional visual elements -->
+            <xacro:insert_block name="extra_visuals"/>
+
+            <!-- Inertial -->
+            <inertial>
+                <mass value="${config['mass'] * g_to_kg}"/>
+                <origin xyz="${config['com_xyz'][0] * mm_to_m}
+               ${config['com_xyz'][1] * mm_to_m}
+               ${config['com_xyz'][2] * mm_to_m}" rpy="0.0 0.0 0.0"/>
+                <inertia ixx="${config['inertia']['ixx'] * g_mm2_to_kg_m2}" ixy="${config['inertia']['ixy'] * g_mm2_to_kg_m2}" ixz="${config['inertia']['ixz'] * g_mm2_to_kg_m2}" iyy="${config['inertia']['iyy'] * g_mm2_to_kg_m2}" iyz="${config['inertia']['iyz'] * g_mm2_to_kg_m2}" izz="${config['inertia']['izz'] * g_mm2_to_kg_m2}"/>
+            </inertial>
+
+            <!-- Collision -->
+            <collision name="${link_name}_collision">
+                <origin xyz="${config['collision_origin_xyz'][0] * mm_to_m}
+               ${config['collision_origin_xyz'][1] * mm_to_m}
+               ${config['collision_origin_xyz'][2] * mm_to_m}" rpy="${config['collision_origin_rpy'][0]}
+               ${config['collision_origin_rpy'][1]}
+               ${config['collision_origin_rpy'][2]}"/>
+                <geometry>
+                    <mesh filename="${collision_mesh_dir}/${config['mesh']}_collision.stl" scale="0.01 0.01 0.01"/>
+                </geometry>
+            </collision>
+
+        </link>
+    </xacro:macro>
+
+    <!-- Joint module -->
+    <xacro:macro name="qube_joint" params="
+      joint_name
+      config">
+        <joint name="${joint_name}" type="${config['type']}">
+
+            <!-- Parent-child relationship -->
+            <parent link="${config['parent']}"/>
+            <child link="${config['child']}"/>
+
+            <!-- Joint origin -->
+            <origin xyz="${config['origin_xyz'][0] * mm_to_m}
+             ${config['origin_xyz'][1] * mm_to_m}
+             ${config['origin_xyz'][2] * mm_to_m}" rpy="${config['origin_rpy'][0]}
+             ${config['origin_rpy'][1]}
+             ${config['origin_rpy'][2]}"/>
+
+
+            <!-- Movable joint configuration -->
+            <xacro:if value="${config['type'] != 'fixed'}">
+                <axis xyz="${config['axis'][0]}
+               ${config['axis'][1]}
+               ${config['axis'][2]}"/>
+                <limit effort="${config['effort']}" velocity="${config['velocity']}"/>
+                <dynamics damping="${config['damping']}" friction="${config['friction']}"/>
+            </xacro:if>
+        </joint>
+    </xacro:macro>
+
+</robot>

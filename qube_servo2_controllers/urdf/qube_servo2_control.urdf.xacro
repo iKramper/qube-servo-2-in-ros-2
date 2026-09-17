@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<robot name="qube_servo2_motor"
+    xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- QUBE mechanical description -->
+    <xacro:include filename="$(find qube_servo2_description)/urdf/qube_base.urdf.xacro"/>
+
+    <!-- QUBE motor and ROS 2 control interface -->
+    <xacro:include filename="$(find qube_servo2_controllers)/urdf/qube_servo2_motor_control.xacro"/>
+
+</robot>

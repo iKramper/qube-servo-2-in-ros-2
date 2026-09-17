@@ -1,0 +1,20 @@
+experiment:
+  created_at: "2026-09-16T23:27:14"
+  notes: "New day to control."
+waveform:
+  type: "Sinusoidal"
+  amplitude_v: 1
+  offset_v: 0
+  frequency_hz: 1
+  chirp_end_frequency_hz: 10
+  duty_cycle_percent: 50
+  phase_deg: 10
+  pulse_width_s: 0.5
+  delay_s: 0.5
+  duration_s: 5
+  initial_value_v: 0
+  final_value_v: 1.1
+  rise_time_s: 1
+  tau_s: 1
+  repeat: true
+  publish_rate_hz: 100

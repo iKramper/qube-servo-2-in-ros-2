@@ -1,0 +1,19 @@
+controller_manager:
+  ros__parameters:
+
+    update_rate: 1000
+    
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    motor_voltage_controller:
+      type: forward_command_controller/ForwardCommandController
+
+
+motor_voltage_controller:
+  ros__parameters:
+
+    joints:
+      - motor_hub_link_joint
+
+    interface_name: voltage

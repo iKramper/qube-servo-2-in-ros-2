@@ -1,0 +1,7 @@
+<library path="qube_servo2_gz_system">
+
+    <class name="qube_servo2_actuators/QubeServo2GazeboSystem" type="qube_servo2::actuators::QubeServo2GazeboSystem" base_class_type="gz_ros2_control::GazeboSimSystemInterface">
+        <description>Quanser QUBE-Servo 2 DC motor simulation interface.</description>
+    </class>
+
+</library>

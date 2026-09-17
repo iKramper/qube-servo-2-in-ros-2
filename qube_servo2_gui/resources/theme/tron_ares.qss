@@ -1,0 +1,37 @@
+/* Tron Ares / restrained red-cyan glass instrumentation */
+* { font-family: "Inter", "Segoe UI", sans-serif; font-size: 12px; }
+QMainWindow, QDialog, QWidget { background: #050607; color: #E7EDF2; }
+QFrame#panel {
+  background: qlineargradient(x1:0,y1:0,x2:1,y2:1, stop:0 rgba(24,14,18,230), stop:1 rgba(8,10,13,240));
+  border: 1px solid rgba(255,55,85,95); border-radius: 8px;
+}
+QFrame#subPanel { background: rgba(255,55,85,8); border: 1px solid rgba(255,55,85,45); border-radius: 6px; }
+QFrame#chartFrame { background: rgba(7,10,13,190); border: 1px solid rgba(55,155,255,45); border-radius: 6px; }
+QChartView#scopeChartView { background: transparent; border: none; }
+QLabel#title { color: #FF6680; font-size: 17px; font-weight: 700; letter-spacing: 1.6px; }
+QLabel#panelTitle, QLabel#chartTitle { color: #78B8FF; font-size: 14px; font-weight: 700; letter-spacing: 1.0px; }
+QLabel#metricValue { color:#F2F6FA; font-size:13px; font-family:"DejaVu Sans Mono",monospace; font-weight:700; padding:2px 6px; background:rgba(55,155,255,10); border:1px solid rgba(55,155,255,35); border-radius:4px; }
+QLabel#fieldLabel, QLabel#subtitle, QLabel#chartWindowLabel { color:#7892A8; }
+QLabel#errorText { color:#FF6680; }
+QPushButton { background:rgba(55,155,255,18); color:#F2F6FA; border:1px solid rgba(55,155,255,110); border-radius:6px; padding:6px 12px; font-weight:650; }
+QPushButton:hover { background:rgba(55,155,255,35); border-color:#78B8FF; }
+QPushButton#secondary { background:transparent; border-color:rgba(120,146,168,70); }
+QPushButton#danger { background:rgba(255,0,51,45); border-color:#FF3355; color:#FFE8EC; font-weight:750; }
+QPushButton[recording="true"] { background:rgba(255,0,51,35); border-color:#FF3355; }
+QToolButton#chartToolButton { background:transparent; color:#7892A8; border:1px solid rgba(55,155,255,40); border-radius:4px; padding:2px 5px; font-weight:700; }
+QToolButton#chartToolButton:hover { color:#FFF; border-color:#3399FF; }
+QLineEdit,QComboBox,QSpinBox,QDoubleSpinBox,QTextEdit { background:#080D12; color:#E7EDF2; border:1px solid #263746; border-radius:5px; padding:4px 7px; selection-background-color:#C40028; }
+QLineEdit:focus,QComboBox:focus,QSpinBox:focus,QDoubleSpinBox:focus,QTextEdit:focus { border-color:#3399FF; }
+QCheckBox { color:#C7D1DA; spacing:6px; }
+QToolTip { background:#111820; color:#FFF; border:1px solid #3399FF; padding:5px; }
+QStatusBar { background:#080A0C; color:#7892A8; border-top:1px solid #281A20; }
+
+/* Data recorder state button */
+QPushButton#recordButton {
+  background: #FFB000; color: #090A0C; border: 1px solid #D68D00;
+  font-weight: 750; padding: 6px 13px;
+}
+QPushButton#recordButton:hover { background: #FFB000; border: 2px solid #D68D00; }
+QPushButton#recordButton[recording="true"] {
+  background: #FF3355; color: #FFFFFF; border-color: #FF3355;
+}

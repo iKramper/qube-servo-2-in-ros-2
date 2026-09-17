@@ -1,0 +1,71 @@
+qube_servo2_motor:
+
+  base_link:
+    mesh: "base_link"
+    mass: 1200.025 # g
+    com_xyz: [58.500, 51.000, 51.003] # mm
+    inertia: # g * mm²
+      ixx: 2077897.0
+      ixy: 0.0
+      ixz: 0.0
+      iyy: 2406212.0
+      iyz: 0.0
+      izz: 2406695.0
+    visual_origin_xyz: [0.0, 0.0, 0.0] # mm
+    visual_origin_rpy: [0.0, 0.0, 0.0]
+    collision_origin_xyz: [0.0, 0.0, 0.0] # mm
+    collision_origin_rpy: [0.0, 0.0, 0.0]
+
+  motor_hub_link:
+    mesh: "motor_hub_link"
+    mass: 9.033 # g
+    com_xyz: [0.088, 0.016, -6.456] # mm
+    inertia: # g * mm²
+      ixx: 1000.0
+      ixy: 0.0
+      ixz: -0.02117488
+      iyy: 1000.0
+      iyz: -0.003915658
+      izz: 1000.0
+    visual_origin_xyz: [0.086, 0.016, -11.000] # mm
+    visual_origin_rpy: [0.0, 0.0, 0.0]
+    collision_origin_xyz: [0.086, 0.016, -11.000] # mm
+    collision_origin_rpy: [0.0, 0.0, 0.0]
+
+  disk_link:
+    mesh: "disk_link"
+    mass: 50.508 # g
+    com_xyz: [0.0, 0.0, 4.873] # mm
+    inertia: # g * mm²
+      ixx: 7966.913
+      ixy: 0.0
+      ixz: -0.001064456
+      iyy: 7966.912
+      iyz: 0.0
+      izz: 15123.34
+    visual_origin_xyz: [0.0, 0.0, 0.0] # mm
+    visual_origin_rpy: [0.0, 0.0, 0.0]
+    collision_origin_xyz: [0.0, 0.0, 0.0] # mm
+    collision_origin_rpy: [0.0, 0.0, 0.0]
+
+  joints:
+
+    motor_hub_link_joint:
+      type: "continuous"
+      parent: "base_link"
+      child: "motor_hub_link"
+      origin_xyz: [58.500, 51.000, 114.000] # mm
+      origin_rpy: [0.0, 0.0, 0.0]
+      axis: [0.0, 0.0, 1.0]
+      effort: 100.0
+      velocity: 50.0
+      damping: 0.0
+      friction: 0.0
+
+
+    disk_link_joint:
+      type: "fixed"
+      parent: "motor_hub_link"
+      child: "disk_link"
+      origin_xyz: [0.086, 0.016, -2.000] # mm
+      origin_rpy: [0.0, 0.0, 3.141593]
