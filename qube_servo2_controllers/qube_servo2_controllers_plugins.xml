@@ -1,0 +1,11 @@
+<library path="qube_servo2_voltage_controller">
+
+    <class name="qube_servo2_controllers/QubeVoltageController" type="qube_servo2::controllers::QubeVoltageController" base_class_type="controller_interface::ControllerInterface">
+
+        <description>
+            Pedagogical voltage command controller for the QUBE Servo 2.
+        </description>
+
+    </class>
+
+</library>

@@ -1,0 +1,9 @@
+control:
+  ros__parameters:
+    mode: position
+
+    kp: 1
+    ki: 2
+    kd: 3
+
+    anti_windup: true

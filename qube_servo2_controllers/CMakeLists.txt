@@ -22,6 +22,49 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(controller_interface REQUIRED)
+find_package(hardware_interface REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
+find_package(realtime_tools REQUIRED)
+find_package(std_msgs REQUIRED)
+
+add_library(qube_servo2_voltage_controller SHARED
+    src/qube_voltage_controller.cpp
+)
+
+target_include_directories(qube_servo2_voltage_controller PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+ament_target_dependencies(qube_servo2_voltage_controller
+    controller_interface
+    hardware_interface
+    pluginlib
+    rclcpp
+    rclcpp_lifecycle
+    realtime_tools
+    std_msgs
+)
+
+install(
+    TARGETS qube_servo2_voltage_controller
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+pluginlib_export_plugin_description_file(
+    controller_interface
+    qube_servo2_controllers_plugins.xml
+)
+
+install(
+    DIRECTORY include/
+    DESTINATION include
+)
 
 install(DIRECTORY config launch urdf
     DESTINATION share/${PROJECT_NAME}

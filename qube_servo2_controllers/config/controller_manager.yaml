@@ -1,19 +1,15 @@
 controller_manager:
   ros__parameters:
-
     update_rate: 1000
-    
+
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
     motor_voltage_controller:
-      type: forward_command_controller/ForwardCommandController
-
+      type: qube_servo2_controllers/QubeVoltageController
 
 motor_voltage_controller:
   ros__parameters:
-
-    joints:
-      - motor_hub_link_joint
-
+    joint_name: motor_hub_link_joint
     interface_name: voltage
+    reference_topic: ~/reference

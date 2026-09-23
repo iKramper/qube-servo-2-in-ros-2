@@ -1,0 +1,7 @@
+control:
+  ros__parameters:
+    mode: position
+
+    k_theta: 1
+    k_omega: 2
+    n_ref: 3

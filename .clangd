@@ -1,0 +1,14 @@
+If:
+  PathMatch: qube_servo2_controllers/.*
+CompileFlags:
+  CompilationDatabase: ../build/qube_servo2_controllers
+---
+If:
+  PathMatch: qube_servo2_actuators/.*
+CompileFlags:
+  CompilationDatabase: ../build/qube_servo2_actuators
+---
+If:
+  PathMatch: qube_servo2_sensors/.*
+CompileFlags:
+  CompilationDatabase: ../build/qube_servo2_sensors

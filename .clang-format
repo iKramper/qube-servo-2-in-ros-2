@@ -1,0 +1,33 @@
+BasedOnStyle: LLVM
+Language: Cpp
+
+UseTab: Always
+TabWidth: 4
+IndentWidth: 4
+ContinuationIndentWidth: 4
+IndentAccessModifiers: true
+IndentCaseLabels: true
+NamespaceIndentation: None
+
+ColumnLimit: 120
+AlignAfterOpenBracket: AlwaysBreak
+AlwaysBreakAfterReturnType: AllDefinitions
+
+BreakBeforeBraces: Attach
+Cpp11BracedListStyle: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+
+SpaceBeforeParens: Always
+SpacesInParens: Custom
+SpacesInParensOptions:
+  InConditionalStatements: true
+  InCStyleCasts: false
+  InEmptyParentheses: false
+  Other: true
+
+SeparateDefinitionBlocks: Always
+KeepEmptyLinesAtTheStartOfBlocks: true
+MaxEmptyLinesToKeep: 1
