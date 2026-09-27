@@ -8,8 +8,50 @@ controller_manager:
     motor_voltage_controller:
       type: qube_servo2_controllers/QubeVoltageController
 
+    qube_pid_controller:
+      type: qube_servo2_controllers/QubePIDController
+
+    qube_state_feedback_controller:
+      type: qube_servo2_controllers/QubeStateFeedbackController
+
 motor_voltage_controller:
   ros__parameters:
     joint_name: motor_hub_link_joint
     interface_name: voltage
     reference_topic: ~/reference
+
+qube_pid_controller:
+  ros__parameters:
+    joint_name: motor_hub_link_joint
+    mode: position
+    reference_topic: ~/reference
+
+    gains:
+      kp: 50.2649
+      ki: 591.3092
+      kd: 0.3924
+
+    limits:
+      min_output: -10.0
+      max_output: 10.0
+
+    anti_windup: true
+    angle_wraparound: false
+
+qube_state_feedback_controller:
+  ros__parameters:
+    joint_name: motor_hub_link_joint
+    interface_name: voltage
+    mode: velocity
+
+    reference_topic: ~/reference
+
+    gains:
+      k_position: 0.0
+      k_velocity: 1.3075
+
+    limits:
+      min_output: -10.0
+      max_output: 10.0
+
+    angle_wraparound: true

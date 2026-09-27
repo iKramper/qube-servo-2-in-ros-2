@@ -9,3 +9,27 @@
     </class>
 
 </library>
+
+<library path="qube_servo2_pid_controller">
+
+    <class name="qube_servo2_controllers/QubePIDController" type="qube_servo2::controllers::QubePIDController" base_class_type="controller_interface::ControllerInterface">
+
+        <description>
+            Closed-loop PID position/velocity controller for QUBE Servo 2.
+        </description>
+
+    </class>
+
+</library>
+
+<library path="qube_servo2_state_feedback_controller">
+
+    <class name="qube_servo2_controllers/QubeStateFeedbackController" type="qube_servo2::controllers::QubeStateFeedbackController" base_class_type="controller_interface::ControllerInterface">
+
+        <description>
+            Full-state feedback position controller for the QUBE Servo 2.
+        </description>
+
+    </class>
+
+</library>
