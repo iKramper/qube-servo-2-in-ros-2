@@ -294,7 +294,6 @@ void ScopePlot::updateAxes_() {
         axis_x_->setRange(std::max(0.0, x_max - window_s_), x_max);
     }
 
-    // Deliberately do not auto-rescale Y unless explicitly requested.
     if (auto_range_) fitYToVisibleData();
 }
 
@@ -394,8 +393,6 @@ void ScopePlot::scaleY(double factor) {
     const double center = 0.5 * (axis_y_->min() + axis_y_->max());
     double half = 0.5 * (axis_y_->max() - axis_y_->min()) * factor;
 
-    // Do not allow zooming deeply enough to expose floating-point residue as a signal.
-    // This is display-only; raw telemetry / recording is untouched.
     const double min_span = std::max(1e-9, initial_y_span_ * 1e-6);
     half = std::max(half, 0.5 * min_span);
     setYRange(center - half, center + half);
@@ -407,9 +404,6 @@ void ScopePlot::setPiRadiansYAxis() {
 
     if (!chart_ || !axis_y_) return;
 
-    // Detach and replace the regular numeric axis with a category axis.
-    // QCategoryAxis derives from QValueAxis, so the rest of ScopePlot can
-    // continue using the same range / mapping logic.
     QValueAxis* old_axis = axis_y_;
     chart_->removeAxis(old_axis);
 
@@ -440,9 +434,6 @@ void ScopePlot::setPiRadiansYAxis() {
     y_initialized_ = true;
     auto_range_ = false;
 
-    // A wrapped angular position has a meaningful fixed physical range.
-    // Keep time zoom enabled, but hide vertical scaling controls so the
-    // π labels always retain their meaning.
     if (y_in_btn_) y_in_btn_->setVisible(false);
     if (y_out_btn_) y_out_btn_->setVisible(false);
     if (fit_y_btn_) fit_y_btn_->setVisible(false);
@@ -461,8 +452,6 @@ void ScopePlot::updateTimeLabel_() {
 double ScopePlot::zeroThreshold_() const noexcept {
     if (!axis_y_) return 1e-12;
     const double span = std::abs(axis_y_->max() - axis_y_->min());
-    // Relative deadband tied to the visible physical range. 1e-8 of full span
-    // is far below what can be resolved visually, but suppresses numerical dust.
     return std::max(1e-12, span * 1e-8);
 }
 

@@ -1,0 +1,10 @@
+--- a/qube_servo2_controllers/src/qube_voltage_controller.cpp
++++ b/qube_servo2_controllers/src/qube_voltage_controller.cpp
+@@
+-	reference_topic_ = auto_declare<std::string> ( "reference_topic", "~/referene" );
++	reference_topic_ = auto_declare<std::string> ( "reference_topic", "~/reference" );
+@@
+ 	reference_buffer_.writeFromNonRT ( 0.0 );
+-	return controller_interface::CallbackReturn::ERROR;
++	return controller_interface::CallbackReturn::SUCCESS;
+ }

@@ -11,7 +11,10 @@ class ValueTile final : public QFrame {
     Q_OBJECT
 
 public:
-    ValueTile(const QString& label, const QString& unit, QWidget* parent = nullptr);
+    ValueTile(
+        const QString& label,
+        const QString& unit,
+        QWidget* parent = nullptr);
 
     void setValue(double value, int decimals = 3);
     void setValueText(const QString& text);

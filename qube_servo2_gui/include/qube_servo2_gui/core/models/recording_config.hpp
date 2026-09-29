@@ -23,16 +23,10 @@ enum class PeakSignal {
 
 struct RecordingConfig {
     RecordingMode mode{RecordingMode::Manual};
-
-    // 0 = save every received telemetry sample.
     int sample_interval_ms{0};
-
-    // Shared capture delay for time-window / period-count modes.
     double start_delay_s{0.0};
     double duration_s{10.0};
     int period_count{10};
-
-    // Peak-trigger / peak-count options.
     PeakSignal peak_signal{PeakSignal::Velocity};
     double peak_threshold{1.0};
     double min_peak_distance_s{0.10};

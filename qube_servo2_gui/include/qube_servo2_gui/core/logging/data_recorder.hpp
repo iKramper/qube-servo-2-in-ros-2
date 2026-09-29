@@ -52,28 +52,21 @@ private:
                         const QString& notes,
                         const models::WaveformConfig& waveform,
                         const models::RecordingConfig& config);
-
-    bool prepareCapture_(const models::WaveformConfig& waveform,
-                         const models::RecordingConfig& config,
-                         const QDir& directory,
-                         const QString& base_name);
-    void flushBuffer_();
-    void closeFiles_();
-    void updateCaptureStatus_(double wall_elapsed_s);
+    double periodicFrequency_(const models::WaveformConfig& waveform) const noexcept;
     double selectedPeakSignal_(const models::TelemetrySample& sample) const noexcept;
     bool processPeak_(const models::TelemetrySample& sample, double capture_elapsed_s);
     void writePeak_(const models::TelemetrySample& sample,
                     double capture_elapsed_s,
                     double peak_value);
-    double periodicFrequency_(const models::WaveformConfig& waveform) const noexcept;
+    void updateCaptureStatus_(double wall_elapsed_s);
+    void closeFiles_();
 
     QFile file_;
     QTextStream stream_;
     QFile peak_file_;
     QTextStream peak_stream_;
-    QString csv_buffer_;
-
     QElapsedTimer elapsed_;
+
     qint64 samples_{0};
     int peaks_{0};
     QString current_path_;

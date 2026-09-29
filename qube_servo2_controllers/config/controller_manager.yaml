@@ -25,7 +25,6 @@ qube_pid_controller:
     joint_name: motor_hub_link_joint
     mode: position
     reference_topic: ~/reference
-
     gains:
       kp: 50.2649
       ki: 591.3092
@@ -42,13 +41,12 @@ qube_state_feedback_controller:
   ros__parameters:
     joint_name: motor_hub_link_joint
     interface_name: voltage
-    mode: velocity
-
+    mode: position
     reference_topic: ~/reference
 
     gains:
-      k_position: 0.0
-      k_velocity: 1.3075
+      k_position: 49.795896325468135
+      k_velocity: 0.821343524473623
 
     limits:
       min_output: -10.0
